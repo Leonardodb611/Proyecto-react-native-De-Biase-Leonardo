@@ -7,7 +7,7 @@ export default function App() {
 
   const [textItem, setTextItem] = useState()
   const [itemList, setItemList] = useState([])
-  const [x, setList] = useState([])
+  const [completeList, setCompleteList] = useState([])
 
   const onHandleChengeItem = (t) => {
     setTextItem(t)
@@ -63,7 +63,7 @@ export default function App() {
 
   const completeItem = (itemx) => {
 
-    setList(currentItems => [
+    setCompleteList(currentItems => [
       ...currentItems,
       itemx.value
     ])
@@ -104,7 +104,7 @@ export default function App() {
         <Text style={styles.margenes}>ELEMENTOS COMPLETOS</Text>
 
           <FlatList
-            data={x}
+            data={completeList}
             renderItem={renderCompletos}
           />
         
