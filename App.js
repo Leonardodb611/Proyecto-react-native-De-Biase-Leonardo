@@ -1,6 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, Button, Pressable, FlatList } from 'react-native';
+import BotonDel from './components/botonDel';
+import BotonDone from './components/botonDone';
+import { useFonts } from 'expo-font';
+import AppLoading from 'expo-app-loading';
+
+
 
 
 export default function App() {
@@ -8,6 +14,16 @@ export default function App() {
   const [textItem, setTextItem] = useState()
   const [itemList, setItemList] = useState([])
   const [completeList, setCompleteList] = useState([])
+  const [vista, setVista] = useState(false)
+
+  
+  const [loaded] = useFonts({
+    IBMPlexMono: require('./assets/fonts/IBMPlexMono-Italic.ttf'),
+  })
+
+  if(!loaded) {
+    return null
+  }
 
   const onHandleChengeItem = (t) => {
     setTextItem(t)
@@ -42,12 +58,10 @@ export default function App() {
 
       <View style={styles.buttons}>
 
-              <Pressable style={styles.buttonsStylesDelete} onPress={() => deleteItem(item)}>
-                    <Text>Borrar</Text>
-              </Pressable>
-              <Pressable style={styles.buttonsStylesComplete} onPress={() => completeItem(item)}>
-                    <Text>Echo</Text>
-              </Pressable>
+              < BotonDel functionOnPress={deleteItem} item={item} />
+
+              < BotonDone functionOnPress={completeItem} item={item} />
+
       </View>
     </View>
 
@@ -70,48 +84,58 @@ export default function App() {
 
     deleteItem(itemx)
 
-}
+} 
+
+  let content = <View>
+                  <View>
+                      <TextInput  placeholder='Agregar item' 
+                                value={textItem} 
+                                style={styles.texto} 
+                                onChangeText={onHandleChengeItem}
+                      />
+                    
+                    <Button title='agregar' onPress={addItem} />
+                    <Button title='Borar todo' onPress={delItems} />
+                  </View>
+
+                  <View style={styles.componentes}>
+                      <Text style={styles.margenes}>ELEMENTOS AGREGADOS</Text>
+                          <FlatList
+                            data={itemList}
+                            renderItem={renderItem
+                            }
+                      />
+                    
+                  </View>
+                  <Button title='Ver Tareas completas' onPress={() => setVista(true)} />
+                </View>
+
+  if(vista){
+    content = 
+    <View>
+      <View style={styles.componentes}>
+          
+          <Text style={styles.margenes}>ELEMENTOS COMPLETOS</Text>
+
+            <FlatList
+              data={completeList}
+              renderItem={renderCompletos}
+            />
+
+          
+      </View>
+      <Button title='Ocultar tareas completas' onPress={() => setVista(false)} />
+    </View>
+    
+  }
 
 
 
 
   return (
     <View style={styles.container}>
-
-      <View>
-        <TextInput  placeholder='Agregar item' 
-                    value={textItem} 
-                    style={styles.texto} 
-                    onChangeText={onHandleChengeItem}
-                    />
-        
-        <Button title='agregar' onPress={addItem} />
-        <Button title='Borar todo' onPress={delItems} />
-      </View>
-
-      <View style={styles.componentes}>
-      <Text style={styles.margenes}>ELEMENTOS AGREGADOS</Text>
-          <FlatList
-            data={itemList}
-            renderItem={renderItem
-            }
-          />
-        
-      </View>
-
-      <View style={styles.componentes}>
-        
-        <Text style={styles.margenes}>ELEMENTOS COMPLETOS</Text>
-
-          <FlatList
-            data={completeList}
-            renderItem={renderCompletos}
-          />
-        
-      </View>
-
-
       
+      {content}
     </View>
   );
 }
@@ -128,7 +152,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1, 
     height:50, 
     margin: 10, 
-    textAlign:'center'
+    textAlign:'center',
+    fontFamily: 'IBMPlexMono'
   },
 
   componentes: {
@@ -137,7 +162,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     padding: 5,
     borderRadius: 10,
-    height: 250
+    height: 250,
+    fontFamily: 'IBMPlexMono'
   },
 
 
@@ -146,36 +172,19 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    fontFamily: 'IBMPlexMono'
     
   },
 
   margenes: {
     margin: 2,
-    textAlign:'center'
+    textAlign:'center',
+    fontFamily: 'IBMPlexMono'
   },
 
   buttons: {
     flexDirection: 'row',
     justifyContent: 'flex-end'
-  },
-
-  buttonsStylesDelete: {
-    margin:4,
-    borderWidth: 2,
-    padding: 10,
-    borderRadius: 6,
-    backgroundColor: '#FF9494'
-  },
-
-  buttonsStylesComplete:{
-    margin:4,
-    borderWidth: 2,
-    padding: 10,
-    borderRadius: 6,
-    backgroundColor: '#7BFF49'
   }
-
-  
-
 });
